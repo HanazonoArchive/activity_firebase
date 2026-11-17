@@ -12,14 +12,12 @@ class HomePage extends StatelessWidget {
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController qtyCtrl = TextEditingController();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        title: Text('Firebase Jay Mark Agsoy'),
+        title: Text('Firebase Agsoy'),
         centerTitle: true,
         backgroundColor: Colors.teal,
         actions: [
@@ -29,10 +27,10 @@ class HomePage extends StatelessWidget {
               AuthService().signOut();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => LoginPage())
+                MaterialPageRoute(builder: (_) => LoginPage()),
               );
             },
-          )
+          ),
         ],
       ),
 
@@ -51,7 +49,9 @@ class HomePage extends StatelessWidget {
 
           final docs = snapshot.data!.docs;
           if (docs.isEmpty) {
-            return const Center(child: Text('No items found', style: TextStyle(fontSize: 18),));
+            return const Center(
+              child: Text('No items found', style: TextStyle(fontSize: 18)),
+            );
           }
 
           return ListView.builder(
@@ -64,23 +64,32 @@ class HomePage extends StatelessWidget {
               final imageUrl = data['image_url'];
               return Card(
                 elevation: 3,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 margin: EdgeInsets.symmetric(vertical: 6),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  leading: imageUrl != null 
-                    ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        imageUrl,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
-                    ) : null,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  leading: imageUrl != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            imageUrl,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : null,
                   title: Text(
                     data['name'] ?? '',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   subtitle: Text(
                     'Quantity ${data['quantity'] ?? 0}',
@@ -96,37 +105,39 @@ class HomePage extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.orange),
                         onPressed: () => _confirmDelete(context, item.id),
-                      )
+                      ),
                     ],
                   ),
-
-                )
+                ),
               );
-            }
+            },
           );
         },
-      )
+      ),
     );
   }
 
   void _confirmDelete(BuildContext context, String id) {
-    showDialog(context: context, builder: (_) => AlertDialog(
-      title: const Text('Delete item'),
-      content: const Text('Are you sure you want to delete the item?'),
-      actions: [
-        TextButton(
-          child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          onPressed: () {
-            service.deleteItem(id);
-            Navigator.pop(context);
-          },
-        ),
-        TextButton(
-          child: const Text('Cancel'),
-          onPressed: () => Navigator.pop(context)
-        ),
-      ]
-    ));
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete item'),
+        content: const Text('Are you sure you want to delete the item?'),
+        actions: [
+          TextButton(
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            onPressed: () {
+              service.deleteItem(id);
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
   }
 
   void openAddDialog(BuildContext context) {
@@ -137,80 +148,87 @@ class HomePage extends StatelessWidget {
     String? selectedImageUrl;
 
     showDialog(
-      context: context, 
-      builder: (_) => StatefulBuilder(builder: (context, setState) =>
-      
-      AlertDialog(
-        title: const Text('Add item'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameCtrl,
-              decoration: InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Add item'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: qtyCtrl,
-              decoration: InputDecoration(
-                labelText: 'Quantity',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                
+              SizedBox(height: 10),
+              TextField(
+                controller: qtyCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Quantity',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
+              SizedBox(height: 10),
+              if (selectedImageFile != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    selectedImageFile!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              SizedBox(height: 8),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.upload_file),
+                label: const Text('Upload image'),
+                onPressed: () async {
+                  final pickedFile = await service.pickImageForAddItem();
+                  if (pickedFile != null) {
+                    setState(() {
+                      selectedImageFile = pickedFile.file;
+                      selectedImageUrl = pickedFile.url;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
             ),
-            SizedBox(height: 10),
-            if(selectedImageFile != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.file(
-                selectedImageFile!,
-                width: 120,
-                height: 120,
-                fit: BoxFit.cover,
-              )
-            ),
-            SizedBox(height: 8,),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.upload_file),
-              label: const Text('Upload image'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text('Save'),
               onPressed: () async {
-                final pickedFile = await service.pickImageForAddItem();
-                if (pickedFile != null) {
-                  setState(() {
-                    selectedImageFile = pickedFile.file;
-                    selectedImageUrl = pickedFile.url;
-                  });
+                if (nameCtrl.text.isNotEmpty && qtyCtrl.text.isNotEmpty) {
+                  await service.addItemWithImage(
+                    nameCtrl.text,
+                    int.parse(qtyCtrl.text),
+                    selectedImageUrl,
+                  );
+                  Navigator.pop(context);
                 }
               },
-            )
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () => Navigator.pop(context),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: Text('Save'),
-            onPressed: () async {
-              if (nameCtrl.text.isNotEmpty && qtyCtrl.text.isNotEmpty) {
-                await service.addItemWithImage(nameCtrl.text, int.parse(qtyCtrl.text), selectedImageUrl,);
-                Navigator.pop(context);
-              }
-            }
-          )
-        ],
-      )
-      )
+      ),
     );
   }
 
@@ -235,7 +253,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 10,),
+            const SizedBox(height: 10),
 
             TextField(
               controller: qtyCtrl,
@@ -256,19 +274,24 @@ class HomePage extends StatelessWidget {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text('Update'),
             onPressed: () {
               if (nameCtrl.text.isNotEmpty && qtyCtrl.text.isNotEmpty) {
-                service.updateItem(item.id, nameCtrl.text, int.parse(qtyCtrl.text));
+                service.updateItem(
+                  item.id,
+                  nameCtrl.text,
+                  int.parse(qtyCtrl.text),
+                );
                 Navigator.pop(context);
               }
-            }
-          )
+            },
+          ),
         ],
-      )
-      
+      ),
     );
   }
 }

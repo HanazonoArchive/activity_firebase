@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   setState(() => loading = true);
                   final user = await auth.signInWithEmail(emailCtrl.text, passwordCtrl.text);
+                  if (!mounted) return;
                   setState(() => loading = false);
 
                   if (user != null) {
@@ -89,6 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   setState(() => loading = true);
                   final user = await auth.signInWithGoogle();
+                  if (!mounted) return;
                   setState(() => loading = false);
                   if (user != null) {
                     Navigator.pushReplacement(

@@ -1,6 +1,7 @@
 import 'package:activity_firebase/auth_service.dart';
 import 'package:activity_firebase/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -61,14 +62,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     passwordCtrl.text,
                   );
 
-                  if (!context.mounted) return;
                   setState(() => loading = false);
 
                   if (user != null) {
                     if (!user.emailVerified) {
                       await user.sendEmailVerification();
 
-                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -78,7 +77,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     }
 
-                    if (!context.mounted) return;
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (_) => LoginPage()),

@@ -12,7 +12,20 @@
           "package_name": "firebase.cce.project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "529738355809-qbfdmkf1nudqp1fosu3d0r481b0tp5sp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "firebase.cce.project",
+            "certificate_hash": "4760c6ec3402a353b10dfffd42103117469b4b6d"
+          }
+        },
+        {
+          "client_id": "529738355809-mvqd31a2ruvgi7r7qcln33drd8eoq22b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBKRN4mSj3qpHiPU-sk5M3DdsQW6mZyuTY"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529738355809-mvqd31a2ruvgi7r7qcln33drd8eoq22b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

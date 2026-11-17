@@ -204,9 +204,7 @@ class HomePage extends StatelessWidget {
             onPressed: () async {
               if (nameCtrl.text.isNotEmpty && qtyCtrl.text.isNotEmpty) {
                 await service.addItemWithImage(nameCtrl.text, int.parse(qtyCtrl.text), selectedImageUrl,);
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
+                Navigator.pop(context);
               }
             }
           )

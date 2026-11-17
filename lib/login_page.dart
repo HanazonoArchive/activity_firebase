@@ -2,6 +2,7 @@ import 'package:activity_firebase/auth_service.dart';
 import 'package:activity_firebase/home_page.dart';
 import 'package:activity_firebase/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -48,7 +49,6 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   setState(() => loading = true);
                   final user = await auth.signInWithEmail(emailCtrl.text, passwordCtrl.text);
-                  if (!context.mounted) return;
                   setState(() => loading = false);
 
                   if (user != null) {
@@ -89,7 +89,6 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   setState(() => loading = true);
                   final user = await auth.signInWithGoogle();
-                  if (!context.mounted) return;
                   setState(() => loading = false);
                   if (user != null) {
                     Navigator.pushReplacement(

@@ -30,7 +30,7 @@ class AuthService {
       final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return userCredential.user;
     } catch (e) {
-      debugPrint('Failed to register user: $e');
+      print('Failed to register user: $e');
       return null;
     }
   }
@@ -40,7 +40,7 @@ class AuthService {
       final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return userCredential.user;
     } catch (e) {
-      debugPrint('Failed to log in user: $e');
+      print('Failed to log in user: $e');
       return null;
     }
   }
